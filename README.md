@@ -7,6 +7,10 @@ This is developed primarily for use with [raspy-cal](https://github.com/quantum-
 
 This section will be filled in once functionality has been implemented.
 
+## Dependencies
+
+* pywin32
+
 # Functionality
 Raspy does or will implement the following functionality.  Functionality is not yet implemented unless it is marked as such in the list below.  Functionality is implemented through the HEC-RAS API where possible, or failing that through the direct manipulation of HEC-RAS files (as in [PyRASFile](https://github.com/LARFlows/PyRASFile)).
 
