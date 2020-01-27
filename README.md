@@ -5,7 +5,9 @@ This is developed primarily for use with [raspy-cal](https://github.com/quantum-
 
 # Usage
 
-This section will be filled in once functionality has been implemented.
+This section will be filled in once functionality has been implemented.  General users should be aware that, in the short term, only functionality needed for raspy-cal will be implemented.  Other functionality
+will be built in over the longer term, but the current primary purpose of this project is to support automatic calibration with raspy-cal.  However, other contributors are welcome to focus on broadening the
+functionality.
 
 ## Dependencies
 

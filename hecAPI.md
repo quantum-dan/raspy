@@ -1,6 +1,6 @@
 # HEC-RAS COM Information
 
-Much of this information was found in the code associated with the Water paper "Application of Python Scripting Techniques..." linked in the README.
+Some of this information was found in the code associated with the Water paper "Application of Python Scripting Techniques..." linked in the README.
 
 HEC-RAS provides a Windows COM interface, accessible via pywin32.  For example:
 
@@ -21,12 +21,6 @@ Methods include (functionality specified if known):
 
 Note: I think the Single class referenced is what most of us would call a "float", but I'm not positive.
 
-* `hec.ShowRas()`: launches HEC-RAS.
-* `hec.ProjectOpen(<path>)`: opens the project file specified.  Does not require the HEC-RAS window to be open in order to work, as HEC-RAS is running in the COM object itself.
-* `hec.Geometry_GetNodes()`
-* `hec.Output_NodeOutput()`
-* `hec.QuitRas()`
-* `hec.Plan_SetCurrent()`
 * `hec.Compute_Cancel()`: Bool
 * `hec.Compute_Complete()`: Bool
 * `hec.Compute_CurrentPlan(int nmsg, string[] Msg, [Bool BlockingMode])`: Bool
@@ -127,7 +121,7 @@ Note: I think the Single class referenced is what most of us would call a "float
     * `Save()`
     * `SaveAs(string newProjectName)`
 * `hec.ProjectionSRSFilename()`: String
-* `hec.QuitRas()`
+* `hec.QuitRas()`: hide the HEC-RAS window (does not exit the project etc)
 * `hec.ReachIndex(int riv, string ReachName)`: int
 * `hec.ReachInvert_nPoints(int riv, int rch)`: int
 * `hec.ReachInvert_Points(int riv, int rch, double[] PointX, double[] PointY)`
@@ -144,7 +138,7 @@ Note: I think the Single class referenced is what most of us would call a "float
     * `XSCount()`: int
     * `XSPointCount()`: int
     * `XSPoints(string[] RSName_0, int[] ReachIndex_0, int[] XSStartIndex_0, int[] XSPointCount_0, double[] XSPointX_0, double[] XSPointY_0)`
-* `hec.ShowRas()`
+* `hec.ShowRas()`: show the HEC-RAS window
 * `hec.ShowRasMapper()`
 * `hec.SteadyFlow_`...:
     * `ClearFlowData()`
