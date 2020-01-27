@@ -12,7 +12,7 @@ from win32com import client
 
 
 class RasObject(object):
-    def __init__(self, rasName = "RAS507.HECRASController", ras = None):
+    def __init__(self, rasName = "RAS507.HECRASController", ras=None):
         # By default, initialize a new RAS controller object; otherwise, use the provided one.
         if ras is None:
             self.ras = client.Dispatch(rasName)

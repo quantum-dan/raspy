@@ -15,6 +15,8 @@ How to look through methods (one known approach):
 1. Tools -> References -> Select HEC River Analysis System
 1. View -> Object Browser -> under "Library" dropdown select RAS\<version\>
 
+At present these are described as shown in the VBA Object Browser, so it is unclear if there are differences in how e.g. Python would handle them (for example, all of the methods that seem like they should return something but don't--is that how VBA handles it, or written into it?).  Information will be updated as and if they are tested in Python, but this will only be for a subset of them as I am putting this document together mainly in support of raspy and will only be testing those relevant to raspy.  I suspect that many of the arguments passed in may actually be set by reference within the method to avoid limitations in VBA.  Alternatively, this may be the case but done rather to avoid limitations in whatever HEC-RAS is written in (FORTRAN? Or C++?).
+
 Methods include (functionality specified if known):
 
 Note: I think the Single class referenced is what most of us would call a "float", but I'm not positive.
@@ -58,7 +60,7 @@ Note: I think the Single class referenced is what most of us would call a "float
     * `Get2DFlowAreas(int count, string[] D2Names)`
     * `GetGateNames(string River, string Reach, string RS, int nGate, string[] gateName, string errmsg)`
     * `GetGML(string geomfilename)`
-    * `GetMann((string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)`: Bool (Single is Excel VBA class, meaning unknown)
+    * `GetMann((string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)`: Bool (Single is Excel VBA class, meaning unknown - float?)
     * `GetNode(int riv, int rch, string RS)`: int
     * `GetNodes(int riv, int rch, int nRS, string[] RS, string[] NodeType)`
     * `GetReaches(int riv, int nReach, string[] Reach)`
@@ -83,3 +85,80 @@ Note: I think the Single class referenced is what most of us would call a "float
     * `ComputationLevel_Export(string filename, string errmsg, [Bool WriteFlow, Bool WriteStage, Bool WriteArea, Bool WriteTopWidth])`
     * `GetNode(int riv, int rch, string RS)`: int
     * `GetNodes(int riv, int rch, int nRS, string[] RS, string[] NodeType)`
+    * `GetProfiles(int nProfile, string[] ProfileName)`
+    * `GetReach(int riv, string Reach)`: int
+    * `GetReaches(int riv, int nReach, string[] Reach)`
+    * `GetRiver(string River)`: int
+    * `GetRivers(int nRiver, string[] River)`
+    * `Initialize()`
+    * `NodeOutput(int riv, int rch, int n, int updn, int prof, int nVar)`: Single
+    * `ReachOutput(int riv, int rch, int prof, int nVar, int nRS, string[] RS, Single[] ChannelDist, Single[] value)`
+    * `Variables(int nVar, string[] VarName, string[] VarDesc)`
+    * `VelDist(int riv, int rch, int n, int updn, int prof, int nv, Single[] LeftSta, Single[] RightSta, Single[] ConvPerc, Single[] Area, Single[] WP, Single[] Flow, Single[] HydrDepth, Single[] Velocity)`
+* `hec.OutputDSS_`...:
+    * `GetStageFlow(string River, string Reach, string RS, int nvalue, double[] ValueDateTime, Single[] Stage, Single[] Flow, string errmsg)`: Bool
+    * `GetStageFlowSA(string StorageArea, int nvalue, double[] ValueDateTime, Single[] Stage, Single[] Flow, string errmsg)`: Bool
+* `hec.Plan_`...:
+    * `GetFilename(string planName)`: String
+    * `GetParameterUncertaintyXML()`: String
+    * `InformationXML(string requestXML)`: String
+    * `Names(int PlanCount, string[] PlanNames, Bool IncludeOnlyPlansInBaseDirectory)`
+    * `Reports(int ReportCount, string[] ReportNames)`
+    * `SetCurrent(string PlanTitleToSet)`: Bool
+    * `SetParameterUncertaintyXML(string xmlText)`
+* `hec.PlanOutput_`...:
+    * `IsCurrent(string PlanTitleToCheck, Bool ShowMessageList, string errmsg)`: Bool
+    * `SetCurrent(string PlanTitleToSet)`: Bool
+    * `SetMultiple(int nPlanTitleToSet, string[] PlanTitleToSet_0, Bool ShowMessageList)`: int
+* `hec.Plot`...: (note: no underscore)
+    * `HydraulicTables(string River, string Reach, string RS)`
+    * `PF(string River, string Reach)`
+    * `PFGeneral(string River, string Reach)`
+    * `RatingCurve(string River, string Reach, string RS)`
+    * `StageFlow(string River, string Reach, string RS)`
+    * `StageFlow_SA(string saName)`
+    * `XS(string River, string Reach, string RS)`
+    * `XYZ(string River, string Reach)`
+* `hec.Project_`...:
+    * `Close()`
+    * `Current()`: String
+    * `New(string title, string filename)`
+    * `Open(string projectFilename)`
+    * `Save()`
+    * `SaveAs(string newProjectName)`
+* `hec.ProjectionSRSFilename()`: String
+* `hec.QuitRas()`
+* `hec.ReachIndex(int riv, string ReachName)`: int
+* `hec.ReachInvert_nPoints(int riv, int rch)`: int
+* `hec.ReachInvert_Points(int riv, int rch, double[] PointX, double[] PointY)`
+* `hec.ReachName(int riv, int rch)`: String
+* `hec.RiverIndex(string RiverName)`: int
+* `hec.RiverName(int riv)`: String
+* `hec.Save()`
+* `hec.Schematic_`...:
+    * `D2FlowAreaPolygon(string Name, int count, double[] x, double[] Y)`
+    * `ReachCount()`: int
+    * `ReachPointCount()`: int
+    * `ReachPoints(string[] RiverName_0, string[] ReachName_0, int[] ReachStartIndex_0, int[] ReachPointCount_0, double[] ReachPointX_0, double[] ReachPointY_0)`
+    * `StorageAreaPolygon(string Name, int count, double[] x, double[] Y)`
+    * `XSCount()`: int
+    * `XSPointCount()`: int
+    * `XSPoints(string[] RSName_0, int[] ReachIndex_0, int[] XSStartIndex_0, int[] XSPointCount_0, double[] XSPointX_0, double[] XSPointY_0)`
+* `hec.ShowRas()`
+* `hec.ShowRasMapper()`
+* `hec.SteadyFlow_`...:
+    * `ClearFlowData()`
+    * `FixedWSBoundary(string River, string Reach, Bool Downstream, Single[] WSElev)`: Bool
+    * `nProfile`: int (property, not method)
+    * `SetFlow(string River, string Reach, string RS, Single[] Flow)`
+* `hec.TablePF(string River, string Reach)`
+* `hec.TableXS(string River, string Reach, string RS)`
+* `hec.UnsteadyBoundaryIndex(string River, string Reach, string RS, string StorageArea, string Connection)`: int
+* `hec.UnsteadyFlow_SetGateOpening_Constant(string River, string Reach, string RS, string gateName, Single OpenHeight, string errmsg)`
+* `hec.wcf_`...:
+    * `ComputePlan(string xmlText)`: string
+    * `CreateNewPlan(string xmlText)`: string
+    * `InputDataLocations_Get(string projectfile, string planTitle)`: string
+    * `InputDataLocations_Set(string projectfile, string planTitle, string xmlText)`: string
+    * `OutputDataLocations(string projectfile, string PlanFilename, string planTitle, string planShortID)`: string
+    * `SetOutputPlans(string xmlText, string errMessage)`: Bool
