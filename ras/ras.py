@@ -32,16 +32,49 @@ xs.setAllManning(ns): set all Manning's ns to a list of ns given
 xs.setMainChannelManning(n): set the main channel n to the given n
 """
 
-"""
-The following HEC-RAS COM methods must therefore have wrappers available:
-Compute_CurrentPlan
-Compute_<Show/Hide>ComputationWindow
-Compute_WATPlan
-Create_WATPlanName
-Current<GeomFile, ProjectFile, SteadyFile, UnSteadyFile>
-Get<Nodes, Reaches, Rivers>
-SetMann
-SetMann_LChR
-Plan_<GetFilename, SetCurrent>
-Output_VelDist
-"""
+class XS(object):
+    """
+    A cross section.
+    """
+    def __init__(self, ras, river, reach, rs):
+        """
+        :param ras: RasObject (from wrapper)
+        :param river: river (string)
+        :param reach: string
+        :param rs: river station (string)
+        """
+        self.ras = ras
+        self.river = river
+        self.reach = reach
+        self.rs = rs
+
+    def setAllManning(self, ns):
+        """
+        Set left, main, right ns.
+        :param ns: [left, main, right] Manning's n
+        """
+        self.ras.SetMannLCR(self.river, self.reach,  self.rs, ns[0], ns[1], ns[2])
+
+    def setMainChannelManning(self, n):
+        """
+        Set the main channel n.  For now, set left/right ns to be the same; in future, keep them as-is.
+        :param n: main channel n.
+        """
+        self.ras.SetMannLCR(self.river, self.reach, self.rs, n, n, n)
+
+class Reach(object):
+    """
+    A reach.
+    """
+    def __init__(self, ras, river, reach):
+        self.ras = ras
+        self.river = river
+        self.reach = reach
+        self.xses = self.getCrossSections()
+
+    def getCrossSections(self):
+        """
+        Get a list of the cross sections.  First, get integer IDs for river and reach, then call
+        ras.GetNodes(riv, rch).  It'll be the third item, and all of the non-blank ones within.
+        """
+

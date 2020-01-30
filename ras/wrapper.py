@@ -116,7 +116,7 @@ class RasObject(object):
         """
         return self.ras.Geometry_SetMann_LChR(river, reach, rs, left, channel, right)
 
-    def SetMann(self, river, reach, rs, manns, stations):
+    def SetMann(self, river, reach, rs, manns):
         # Geometry_SetMann(string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)
         """
         Set all Manning's n at various stations.
@@ -128,5 +128,5 @@ class RasObject(object):
         :return: (arguments, errmsg)
         """
         nMann = len(manns)
-        return self.ras.Geometry_SetMann(river, reach, rs, nMann, manns, stations)
+        return self.ras.Geometry_SetMann(river, reach, rs, nMann, manns)
 
