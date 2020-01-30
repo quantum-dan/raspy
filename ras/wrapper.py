@@ -19,6 +19,9 @@ SetMann_LChR
 Plan_<GetFilename, SetCurrent>
 
 Mainly just SetMann and SetMann_LChR are needed, as the other stuff can be done through the GUI
+
+Geometry_SetMann(string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)
+Geometry_SetMann_LChR(string River, string Reach, string RS, Single MannLOB, Single MannChan, Single MannROB, string errmsg)
 """
 
 from win32com import client
@@ -83,7 +86,7 @@ class RasObject(object):
         :return: (riv, rch, n, updn, prof[ile?], nv, (left stations), (right stations), (conv percs), (areas),
             (wetted perimeters), (flows), (depths), (velocities)
         """
-        self.ras.Output_VelDist(riv, rch, n, updn, prof)
+        return self.ras.Output_VelDist(riv, rch, n, updn, prof)
 
     def GetVariables(self):
         """
@@ -97,5 +100,11 @@ class RasObject(object):
         Run the current plan.
         :return: (some bool, nmsg, (messages), blockingmode)
         """
-        self.ras.Compute_CurrentPlan()
+        return self.ras.Compute_CurrentPlan()
+    def SetMannLCR(self, river, reach, rs, left = None, channel = None, right = None):
+        """
+        Set the Manning's n for left, main channel, right.  Note that all three must be specified, as "None" will become 0.  Therefore, the approach,
+        if they are left unspecified, is to find what the ns are and then set them to the same thing.
+
+        """
 
