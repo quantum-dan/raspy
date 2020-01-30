@@ -101,10 +101,32 @@ class RasObject(object):
         :return: (some bool, nmsg, (messages), blockingmode)
         """
         return self.ras.Compute_CurrentPlan()
-    def SetMannLCR(self, river, reach, rs, left = None, channel = None, right = None):
-        """
-        Set the Manning's n for left, main channel, right.  Note that all three must be specified, as "None" will become 0.  Therefore, the approach,
-        if they are left unspecified, is to find what the ns are and then set them to the same thing.
 
+    def SetMannLCR(self, river, reach, rs, left, channel, right):
+        # Geometry_SetMann_LChR(string River, string Reach, string RS, Single MannLOB, Single MannChan, Single MannROB, string errmsg)
         """
+        Set the Manning's n for left, main channel, right.
+        :param river: river name (string)
+        :param reach: reach name (string)
+        :param rs: river station (string)
+        :param left: left bank Manning's n
+        :param right: right bank Manning's n
+        :param channel: main channel Manning's n
+        :return: (arguments, errmsg)
+        """
+        return self.ras.Geometry_SetMann_LChR(river, reach, rs, left, channel, right)
+
+    def SetMann(self, river, reach, rs, manns, stations):
+        # Geometry_SetMann(string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)
+        """
+        Set all Manning's n at various stations.
+        :param river: river name (string)
+        :param reach: reach name (string)
+        :param rs: river station (string)
+        :param manns: Manning's ns
+        :param stations: stations (from the left)
+        :return: (arguments, errmsg)
+        """
+        nMann = len(manns)
+        return self.ras.Geometry_SetMann(river, reach, rs, nMann, manns, stations)
 
