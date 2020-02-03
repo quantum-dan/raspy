@@ -38,17 +38,16 @@ class OpsAPI(object):
         self.ras = rasObj
     def openProject(self, projectPath):
         self.ras.openProject(projectPath)
-    # None of the commented stuff is supported yet.
-    """def setPlan(self, plan):
+    def setPlan(self, plan):
         self.ras.setPlan(plan)
     def setGeometry(self, geom):
-        self.ras.setGeom(geom)"""
+        self.ras.setGeom(geom)
     def compute(self, steady = True, plan = None):
         if steady:
             self.ras.computeSteady(plan)
         else:
             self.ras.computeUnsteady(plan)
-    """def exit(self):
+    def exit(self):
         self.ras.exit()
     def newPlan(self, planId):
         self.ras.newPlan(planId)
@@ -56,40 +55,53 @@ class OpsAPI(object):
         if steady:
             self.ras.setSteadyFlow(flow)
         else:
-            self.ras.setUnsteadyFlow(flow)"""
+            self.ras.setUnsteadyFlow(flow)
+
+def nestedDictMap(map, func):
+    # Apply func to all the values at the bottom level in map
+    if map.__class__ == {}.__class__:
+        for key in map:
+            map[key] = nestedDictMap(map[key], func)
+        return map
+    else:
+        return func(map)
 
 class DataAPI(object):
     # Data retrieval
     def __init__(self, rasObj):
         self.ras = rasObj
-    def allFlow(self, river = None, reach = None, rs = None):
-        return self.ras.getSimData(river, reach, rs)
-    def getSingleDatum(self, func, river, reach, rs):
+    def allFlow(self, river = None, reach = None, rs = None, nprofs = 1):
+        if nprofs == 1:
+            return self.ras.getSimData(river, reach, rs)
+        else:
+            return {i: self.ras.getSimData(river, reach, rs, prof = i) for i in range(1, nprofs + 1)}
+    def getSingleDatum(self, func, river, reach, rs, nprofs = 1):
         # Get a single datum (e.g. velocity, stage), regardless of level of nesting
         # func: function to extract relevant value from data class (e.g. lambda x: x.velocity)
-        result = self.allFlow(river, reach, rs)
-        if not (rs is None): # just the one station
-            return func(result)
-        elif not (reach is None): # just the one reach
-            for rs, dat in result.items():
-                dat = func(dat)
-                result[rs] = dat
-            return result
-        elif not (river is None): # just the one river
-            for rch, rdat in result.items():
-                for rs, dat in rdat.items():
-                    rdat[rs] = func(dat)
-            return result
-        else: # all rivers
-            for riv, ridat in result.items():
-                for rch, rdat in ridat.items():
-                    for rs, dat in rdat.items():
-                        rdat[rs] = func(dat)
-            return result
-    def velocity(self, river = None, reach = None, rs = None):
-        return self.getSingleDatum(lambda x: x.velocity, river, reach, rs)
-    def stage(self, river = None, reach = None, rs = None):
-        return self.getSingleDatum(lambda x: x.maxDepth, river, reach, rs)
+        result = self.allFlow(river, reach, rs, nprofs)
+        return nestedDictMap(result, func)
+        # if not (rs is None): # just the one station
+        #     return func(result)
+        # elif not (reach is None): # just the one reach
+        #     for rs, dat in result.items():
+        #         dat = func(dat)
+        #         result[rs] = dat
+        #     return result
+        # elif not (river is None): # just the one river
+        #     for rch, rdat in result.items():
+        #         for rs, dat in rdat.items():
+        #             rdat[rs] = func(dat)
+        #     return result
+        # else: # all rivers
+        #     for riv, ridat in result.items():
+        #         for rch, rdat in ridat.items():
+        #             for rs, dat in rdat.items():
+        #                 rdat[rs] = func(dat)
+        #     return result
+    def velocity(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatum(lambda x: x.velocity, river, reach, rs, nprofs)
+    def stage(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatum(lambda x: x.maxDepth, river, reach, rs, nprofs)
     # Below not strictly needed for raspy-cal
     # def ratingCurve
     # def n
@@ -106,17 +118,12 @@ class ParamsAPI(object):
     def modifyN(self, manning, river, reach, geom = None):
         """
         Specify the Manning's n for the relevant geometry.
-        :param manning: specifies Manning's n.  If it is a list of doubles, then this will set the main channel ns for
-            the entire reach.  A list of lists of doubles will set that many ns at each point for the entire reach.
-            Alternatively, a dictionary of <river station>:<n> can be used; if there is one n it will set the main channel,
-            and if there is a list it will set all of them.  If the argument is just a number, it will set all main channel n
-            to that number. Note that Manning's equation seems to not be very sensitive to non-main channel n, in general.
+        :param manning: specifies Manning's n.  If it is a list of doubles, then this will set the main channel ns for the entire reach.  A list of lists of doubles will set that many ns at each point for the entire reach.  Alternatively, a dictionary of <river station>:<n> can be used; if there is one n it will set the main channel, and if there is a list it will set all of them.  Note that Manning's equation seems to not be very sensitive to non-main channel n, in general.
 
         Note that for now the list functionality will instead take a list of 3 to set left, main channel, right ns.
         :param river: name of the river.
         :param reach: name of the reach
-        :param geom: name (if string) or number (if integer) of the geometry file.  If None, it will use the currently
-            active geometry, if any.
+        :param geom: name (if string) or number (if integer) of the geometry file.  If None, it will use the currently active geometry, if any.
         """
         if manning.__class__ == [].__class__ and len(manning) > 0:
             # List
@@ -139,13 +146,6 @@ class ParamsAPI(object):
                     xs.setAllManning(val)
                 else:
                     xs.setMainChannelManning(val)
-        elif manning.__class__ == 0.1.__class__:
-            # Single value
-            for xs in self.ras.reach(river, reach, geom).xses:
-                xs.setMainChannelManning(manning)
-        else:
-            raise(TypeError("Manning must be a list, dictionary or float"))
-
 
 class API(object):
     def __init__(self, rasObj):

@@ -77,7 +77,7 @@ class RasObject(object):
         """
         return self.ras.Output_NodeOutput(riv, rch, n, updn, prof)
 
-    def GetVelDist(self, riv, rch, n, updn = None, prof = None):
+    def GetVelDist(self, riv, rch, n, updn = None, prof = 1):
         """
         Get vel dist.  What is that?
         :param riv: int river
