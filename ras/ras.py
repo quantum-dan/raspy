@@ -177,6 +177,9 @@ class Reach(object):
     def xs(self, rs):
         return [xs for xs in self.xses if xs.rs == rs][0]
 
+    def xsAt(self, rs):
+        return self.xs(rs)
+
 class River(object):
     """
     A river.

@@ -118,7 +118,12 @@ class ParamsAPI(object):
     def modifyN(self, manning, river, reach, geom = None):
         """
         Specify the Manning's n for the relevant geometry.
-        :param manning: specifies Manning's n.  If it is a list of doubles, then this will set the main channel ns for the entire reach.  A list of lists of doubles will set that many ns at each point for the entire reach.  Alternatively, a dictionary of <river station>:<n> can be used; if there is one n it will set the main channel, and if there is a list it will set all of them.  Note that Manning's equation seems to not be very sensitive to non-main channel n, in general.
+        :param manning: specifies Manning's n.  If it is a list of doubles, then this will set the main channel ns for
+        the entire reach.  A list of lists of doubles will set that many ns at each point for the entire reach.
+        Alternatively, a dictionary of <river station>:<n> can be used; if there is one n it will set the main channel,
+        and if there is a list it will set all of them.  Note that Manning's equation seems to not be very sensitive to
+        non-main channel n, in general. If the argument is just a number, it will set all main channel n to that number.
+        Note that Manning's equation seems to not be very sensitive to non-main channel n, in general.
 
         Note that for now the list functionality will instead take a list of 3 to set left, main channel, right ns.
         :param river: name of the river.
@@ -146,6 +151,12 @@ class ParamsAPI(object):
                     xs.setAllManning(val)
                 else:
                     xs.setMainChannelManning(val)
+        elif manning.__class__ == 0.1.__class__:
+            # Single value
+            for xs in self.ras.reach(river, reach, geom).xses:
+                xs.setMainChannelManning(manning)
+        else:
+            raise (TypeError("Manning must be a list, dictionary or float"))
 
 class API(object):
     def __init__(self, rasObj):
