@@ -32,7 +32,7 @@ xs.setAllManning(ns): set all Manning's ns to a list of ns given
 xs.setMainChannelManning(n): set the main channel n to the given n
 """
 
-from ras.wrapper import RasObject
+from raspy.ras.wrapper import RasObject
 
 class Ras(object):
     """
