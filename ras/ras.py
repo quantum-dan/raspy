@@ -60,6 +60,9 @@ class Ras(object):
     def computeUnsteady(self, plan = None):
         self.ras.Compute()
 
+    def computeIsComplete(self):
+        return self.ras.Complete()
+
     def getSimData(self, river = None, reach = None, rs = None, prof = 1):
         if river is None:
             return {riv.river: self.getSimData(riv.river, reach, rs) for riv in self.rivers}

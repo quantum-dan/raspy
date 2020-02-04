@@ -102,6 +102,9 @@ class RasObject(object):
         """
         return self.ras.Compute_CurrentPlan()
 
+    def Complete(self):
+        return self.ras.Compute_Complete()
+
     def SetMannLCR(self, river, reach, rs, left, channel, right):
         # Geometry_SetMann_LChR(string River, string Reach, string RS, Single MannLOB, Single MannChan, Single MannROB, string errmsg)
         """

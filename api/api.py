@@ -42,11 +42,14 @@ class OpsAPI(object):
         self.ras.setPlan(plan)
     def setGeometry(self, geom):
         self.ras.setGeom(geom)
-    def compute(self, steady = True, plan = None):
+    def compute(self, steady = True, plan = None, wait = True):
         if steady:
             self.ras.computeSteady(plan)
         else:
             self.ras.computeUnsteady(plan)
+        if wait:
+            while not self.ras.computeIsComplete():
+                pass
     def exit(self):
         self.ras.exit()
     def newPlan(self, planId):
