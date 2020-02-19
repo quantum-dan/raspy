@@ -161,6 +161,19 @@ class ParamsAPI(object):
         else:
             raise (TypeError("Manning must be a list, dictionary or float"))
 
+    def setSteadyFlows(self, river, reach, rs, flows):
+        """
+        Specify the steady flows for the given node.
+        :param river: river
+        :param reach: reach
+        :param rs: rs (top rs if None)
+        :param flows: list of flows
+        """
+        xs = self.ras.reach(river, reach).xses[-1] if rs is None else self.ras.reach(river, reach).xsAt(rs)
+        xs.setSteadyFlow(flows)
+
+
+
 class API(object):
     def __init__(self, rasObj):
         self.ras = rasObj

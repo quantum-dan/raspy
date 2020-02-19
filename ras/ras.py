@@ -132,6 +132,10 @@ class XS(object):
         """
         self.ras.SetMannLCR(self.river, self.reach, self.rs, n, n, n)
 
+    def setSteadyFlow(self, flows):
+        self.ras.setSteadyFlow(self.river, self.reach, self.rs, flows)
+
+
 def getRiverID(ras, river):
     """
     Find river ID from river name

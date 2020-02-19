@@ -117,7 +117,9 @@ class RasObject(object):
         :param channel: main channel Manning's n
         :return: (arguments, errmsg)
         """
-        return self.ras.Geometry_SetMann_LChR(river, reach, rs, left, channel, right)
+        result = self.ras.Geometry_SetMann_LChR(river, reach, rs, left, channel, right)
+        self.ras.Project_Save()
+        return result
 
     def SetMann(self, river, reach, rs, manns):
         # Geometry_SetMann(string River, string Reach, string RS, int nMann, Single[] Mann_n, Single[] station, string errmsg)
@@ -131,5 +133,14 @@ class RasObject(object):
         :return: (arguments, errmsg)
         """
         nMann = len(manns)
-        return self.ras.Geometry_SetMann(river, reach, rs, nMann, manns)
+        result = self.ras.Geometry_SetMann(river, reach, rs, nMann, manns)
+        self.ras.Project_Save()
+        return result
+
+    def SetSteadyFlow(self, river, reach, rs, flows):
+        # [0] because it starts from flows[1] for some reason
+        self.ras.QuitRas()  # So nProfile works
+        self.ras.SteadyFlow_SetFlow(river, reach, rs, [0] + flows)
+        self.ras.SteadyFlow_nProfile = len(flows)  # only works if RAS is not displayed
+        self.ras.Project_Save()
 
