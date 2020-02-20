@@ -137,10 +137,26 @@ class RasObject(object):
         self.ras.Project_Save()
         return result
 
-    def SetSteadyFlow(self, river, reach, rs, flows):
+    def QuitRas(self):
+        self.ras.QuitRas()
+
+    def SetSteadyFlow(self, river, reach, rs, flows, wait = False):
         # [0] because it starts from flows[1] for some reason
-        self.ras.QuitRas()  # So nProfile works
+        # May want to consider using PyRASFile for this.  The COM is astonishingly finicky.  Or buggy.
+        # I think part of the COM is using 1-based indexing and part of it is using 0-based indexing.
+        # Setting the flow throws an index out of range error unless len(flows) = nProfile + 1
+        # But saving throws an index out of range error then
+        # However, setting n = len(flows) - 1, then setting flows, then setting n = len(flows) still throws
+        # an out of range error when saving
+        # The problem seems to be changing nProfile, period; whatever it is set to, the graphical editor
+        # will always have an error loading flow data.  The problem, presumably, is that nProfile is meant
+        # to be read and not written to, even though it does allow writing.  How, then, to set it?
+        # One thing that works is asking the user to set it.
+        print("Set the number of profiles to %d and hit enter when done" % len(flows))
+        self.ras.Edit_SteadyFlowData()
+        if wait:
+            input()
         self.ras.SteadyFlow_SetFlow(river, reach, rs, [0] + flows)
-        self.ras.SteadyFlow_nProfile = len(flows)  # only works if RAS is not displayed
+        # self.ras.SteadyFlow_nProfile = len(flows)  # only works if RAS is not displayed
         self.ras.Project_Save()
 
