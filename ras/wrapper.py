@@ -140,6 +140,9 @@ class RasObject(object):
     def QuitRas(self):
         self.ras.QuitRas()
 
+    def EditSteadyFlow(self):
+        self.ras.Edit_SteadyFlowData()
+
     def SetSteadyFlow(self, river, reach, rs, flows, wait = False):
         # [0] because it starts from flows[1] for some reason
         # May want to consider using PyRASFile for this.  The COM is astonishingly finicky.  Or buggy.
@@ -152,9 +155,9 @@ class RasObject(object):
         # will always have an error loading flow data.  The problem, presumably, is that nProfile is meant
         # to be read and not written to, even though it does allow writing.  How, then, to set it?
         # One thing that works is asking the user to set it.
-        print("Set the number of profiles to %d and hit enter when done" % len(flows))
-        self.ras.Edit_SteadyFlowData()
         if wait:
+            print("Set the number of profiles to %d and hit enter when done" % len(flows))
+            self.EditSteadyFlow()
             input()
         self.ras.SteadyFlow_SetFlow(river, reach, rs, [0] + flows)
         # self.ras.SteadyFlow_nProfile = len(flows)  # only works if RAS is not displayed

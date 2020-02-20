@@ -161,16 +161,20 @@ class ParamsAPI(object):
         else:
             raise (TypeError("Manning must be a list, dictionary or float"))
 
-    def setSteadyFlows(self, river, reach, rs, flows):
+    def editSteadyFlows(self):
+        self.ras.editSteadyFlow()
+
+    def setSteadyFlows(self, river, reach, rs, flows, wait = False):
         """
         Specify the steady flows for the given node.
         :param river: river
         :param reach: reach
         :param rs: rs (top rs if None)
         :param flows: list of flows
+        :param wait: wait for user to set profile count
         """
         xs = self.ras.reach(river, reach).xses[-1] if rs is None else self.ras.reach(river, reach).xsAt(rs)
-        xs.setSteadyFlow(flows)
+        xs.setSteadyFlow(flows, wait)
 
 
 
