@@ -32,6 +32,8 @@ xs.setAllManning(ns): set all Manning's ns to a list of ns given
 xs.setMainChannelManning(n): set the main channel n to the given n
 """
 
+from raspy.PyRASFile import profileWriter as pw
+
 class OpsAPI(object):
     # Running and general operation
     def __init__(self, rasObj):
@@ -164,17 +166,29 @@ class ParamsAPI(object):
     def editSteadyFlows(self):
         self.ras.editSteadyFlow()
 
-    def setSteadyFlows(self, river, reach, rs, flows, wait = False):
-        """
-        Specify the steady flows for the given node.
-        :param river: river
-        :param reach: reach
-        :param rs: rs (top rs if None)
-        :param flows: list of flows
-        :param wait: wait for user to set profile count
-        """
-        xs = self.ras.reach(river, reach).xses[-1] if rs is None else self.ras.reach(river, reach).xsAt(rs)
-        xs.setSteadyFlow(flows, wait)
+    def setSteadyFlows(self, river, reach, rs, flows, slope = 0.001, fileN = "01", hecVer = "5.0.7"):
+        # Slope is used for boundary conditions - normal depth
+        rs = self.ras.reach(river, reach).xses[0].rs if rs is None else rs
+        header = pw.mkFlowHeader(river, reach, rs)
+        otherHeaders = []
+        boundKeys = []
+        for riv in self.ras.rivers:
+            for rch in riv.reaches:
+                topXs = rch.xses[0]
+                otherHeaders.append(pw.mkFlowHeader(riv.river, rch.reach, topXs.rs))
+                boundKeys.append("%s,%s" % (riv.river, rch.reach))
+        count = len(flows)
+        pdata = {h: [1] * count for h in otherHeaders}  # Meaningless data so HEC-RAS doesn't complain
+        pdata[header] = flows
+        bound = lambda pn, q: pw.mkBoundaryData("Normal Depth", "Normal Depth", slope, slope)
+        bounds = {h: bound for h in boundKeys}
+        flowFile = pw.buildFile(count, pdata, bounds, title="Flow" + fileN, ver=hecVer)
+        projPath = self.ras.currentProject()
+        basePath = "\\".join(projPath.split("\\")[:-1])
+        projName = projPath.split("\\")[-1][:-4]  # without the .prj
+        flowPath = "%s\\%s.f%s" % (basePath, projName, fileN)
+        with open(flowPath, "w") as f:
+            f.write(flowFile)
 
 
 

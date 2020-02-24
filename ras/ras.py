@@ -47,6 +47,9 @@ class Ras(object):
     def openProject(self, path):
         self.ras.OpenProject(path)
 
+    def currentProject(self):
+        return self.ras.CurrentProject()
+
     def river(self, river, geom = None):
         return [riv for riv in self.rivers if riv.river == river][0]
 

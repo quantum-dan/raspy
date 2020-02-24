@@ -39,6 +39,9 @@ class RasObject(object):
         # Show HEC-RAS window
         self.ras.ShowRas()
 
+    def CurrentProject(self):
+        return self.ras.Project_Current()
+
     def OpenProject(self, path):
         # Open a project at the given path
         self.ras.Project_Open(path)
