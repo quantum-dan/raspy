@@ -47,6 +47,9 @@ class Ras(object):
     def openProject(self, path):
         self.ras.OpenProject(path)
 
+    def quit(self):
+        self.ras.QuitRas()
+
     def currentProject(self):
         return self.ras.CurrentProject()
 

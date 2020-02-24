@@ -168,6 +168,7 @@ class ParamsAPI(object):
 
     def setSteadyFlows(self, river, reach, rs, flows, slope = 0.001, fileN = "01", hecVer = "5.0.7"):
         # Slope is used for boundary conditions - normal depth
+        # Bug: this doesn't take effect until Ras is closed and re-opened.
         rs = self.ras.reach(river, reach).xses[0].rs if rs is None else rs
         header = pw.mkFlowHeader(river, reach, rs)
         otherHeaders = []
@@ -190,6 +191,7 @@ class ParamsAPI(object):
         with open(flowPath, "w") as f:
             f.write(flowFile)
         self.ras.save()
+        self.ras.quit()
 
 
 
