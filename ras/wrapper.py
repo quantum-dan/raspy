@@ -39,6 +39,9 @@ class RasObject(object):
         # Show HEC-RAS window
         self.ras.ShowRas()
 
+    def Save(self):
+        self.ras.Project_Save()
+
     def CurrentProject(self):
         return self.ras.Project_Current()
 

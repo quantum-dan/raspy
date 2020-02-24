@@ -189,6 +189,7 @@ class ParamsAPI(object):
         flowPath = "%s\\%s.f%s" % (basePath, projName, fileN)
         with open(flowPath, "w") as f:
             f.write(flowFile)
+        self.ras.save()
 
 
 

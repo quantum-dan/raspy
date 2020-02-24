@@ -50,6 +50,9 @@ class Ras(object):
     def currentProject(self):
         return self.ras.CurrentProject()
 
+    def save(self):
+        self.ras.Save()
+
     def river(self, river, geom = None):
         return [riv for riv in self.rivers if riv.river == river][0]
 
