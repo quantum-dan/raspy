@@ -190,8 +190,10 @@ class ParamsAPI(object):
         flowPath = "%s\\%s.f%s" % (basePath, projName, fileN)
         with open(flowPath, "w") as f:
             f.write(flowFile)
+        # Save, quit, and reopen to make it use the new flow data
         self.ras.save()
         self.ras.quit()
+        self.ras.openProject(projPath)
 
 
 
