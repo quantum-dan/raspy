@@ -89,9 +89,10 @@ class Ras(object):
             sd = self.ras.GetVelDist(xs.riverID, xs.reachID, xs.xsID, 0, prof)
             # sd: (6x args, (left station), (right station), (conv perc), (area), (wetted perimeter), (flow),
             # (depth), (velocity))
-            velocity = sd[-1][0]
-            depth = sd[-2][0]
-            flow = sd[-3][0]
+            vels = sd[-1]
+            velocity = vels[0] if len(vels) == 1 else vels[1]
+            depth = max(sd[-2])
+            flow = sum(sd[-3])
             etc = {
                 "area": sd[-4][0],
                 "wp": sd[-5][0]
