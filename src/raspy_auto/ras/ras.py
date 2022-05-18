@@ -40,9 +40,16 @@ class Ras(object):
     """
     def __init__(self, projectPath, rasObject = RasObject()):
         self.ras = rasObject
-        if not (projectPath is None):
-            self.openProject(projectPath)
-        self.rivers = [River(self.ras, river.strip()) for river in self.ras.GetRivers()[1]]
+        try:
+            if not (projectPath is None):
+                self.openProject(projectPath)
+            self.rivers = [River(self.ras, river.strip()) for river in self.ras.GetRivers()[1]]
+        except Exception:
+            print("Opening RAS failed")
+            try:
+                self.ras.QuitRas()
+            except Exception:
+                pass
 
     def openProject(self, path):
         self.ras.OpenProject(path)

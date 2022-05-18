@@ -1,2 +1,2 @@
-from raspy.ras.ras import Ras
-from raspy.ras.wrapper import RasObject
+from raspy_auto.ras.ras import Ras
+from raspy_auto.ras.wrapper import RasObject

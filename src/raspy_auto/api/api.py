@@ -52,8 +52,8 @@ class OpsAPI(object):
         if wait:
             while not self.ras.computeIsComplete():
                 pass
-    def exit(self):
-        self.ras.exit()
+    def quit(self):
+        self.ras.quit()
     def newPlan(self, planId):
         self.ras.newPlan(planId)
     def setFlow(self, flow, steady = True):
