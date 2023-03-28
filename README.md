@@ -5,6 +5,16 @@ This can be installed on pip/PyPI as [raspy-auto](https://pypi.org/project/raspy
 
 This is developed primarily for use with [raspy-cal](https://github.com/quantum-dan/raspy-cal), an automatic calibrator for HEC-RAS.  However, it could be used for any other HEC-RAS automation project.  See [PyRAS](https://pypi.org/project/PyRAS/) and the paper "[Application of Python Scripting Techniques for Control and Automation of HEC-RAS Simulations](https://www.mdpi.com/2073-4441/10/10/1382)" for similar ideas.
 
+# HEC-RAS Versions
+
+It is now straightforwardly possible to specify different HEC-RAS versions when
+creating a `Ras` object.  There is now a second, optional argument `which` specifying
+a HEC-RAS version string, which is the version number with no periods.  The
+default is `"507"`, specifying HEC-RAS 5.0.7.  To use the current default download
+as of this writing, 6.3.1, use `Ras(projectPath, "631")`.  I have not extensively
+tested this with HEC-RAS 6, but a few methods I did test still work; open an
+Issue if one does not.
+
 # Updates and Maintenance
 
 If extended functionality would be useful, open an Issue and I will look into making updates.

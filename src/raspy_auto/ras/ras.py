@@ -38,8 +38,10 @@ class Ras(object):
     """
     The whole RAS controller.
     """
-    def __init__(self, projectPath, rasObject = RasObject()):
-        self.ras = rasObject
+    def __init__(self, projectPath, which="507", rasObject = None):
+        rasBase = "RAS%s.HECRASController"
+        self.ras = rasObject if rasObject is not None else\
+            RasObject(rasBase % which)
         try:
             if not (projectPath is None):
                 self.openProject(projectPath)
