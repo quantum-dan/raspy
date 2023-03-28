@@ -73,7 +73,8 @@ class RasObject(object):
         """
         return self.ras.Geometry_GetReaches(riv)
 
-    def GetNodeOutput(self, riv, rch, n, updn = None, prof = None):
+    def GetNodeOutput(self, riv, rch, n, updn = None, prof = None,
+                      nVar = None):
         """
         Get node output.
         :param riv: int river
@@ -81,7 +82,7 @@ class RasObject(object):
         :param n: int node number (from top)
         :return: (some float (output?), riv, rch, n, updn, prof, nVar)
         """
-        return self.ras.Output_NodeOutput(riv, rch, n, updn, prof)
+        return self.ras.Output_NodeOutput(riv, rch, n, updn, prof, nVar)
 
     def GetVelDist(self, riv, rch, n, updn = None, prof = 1):
         """

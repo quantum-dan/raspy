@@ -21,8 +21,6 @@ If extended functionality would be useful, open an Issue and I will look into ma
 
 # Usage
 
-The default setup assumes HEC-RAS 5.0.7.  If you need support for a different version, let me know and I will see about implementing it.
-
 Raspy is intended to be used through an `API` object, which provides a uniform way to access functionality.  The argument to the `API` class is a `Ras` object, which by default is from the `Ras` module but could come from another library as long as compatible functionality is provided (requirements are documented in a comment at the top of `api.py`).  By default, a `Ras` object is created with a project path to a prepared HEC-RAS project, which must have geometry set up, a flow file to write to, etc.  The assumption is that the desired plan (pointing to the correct flow file and geometry) is already open in that project, but `API.ops.setPlan` can set a plan file.
 
 Core functionality is built and tested for steady-state models.  I may be able to implement some simplistic unsteady-state functionality on request.
@@ -32,7 +30,8 @@ The `API` object contains three other objects: `ops`, which contains operations 
 * `API.ops.compute()` runs the model (optional: specify steady/unsteady flow, plan ID, and whether to wait for the compute run to complete before returning).
 * `API.params.modifyN(manning, river, reach)` specifies Manning's roughness coefficient.  This can be done in a number of ways, as described by a comment in that function.  In theory, it is possible to specify multiple roughnesses per cross section (e.g. left overbank, main channel, right overbank) and roughnesses for each cross section in a reach; however, only setting a single roughness for the whole channel has been tested, so use more advanced functionality at your own risk.
 * `API.params.setSteadyFlows()` sets steady flow rates.  The HEC-RAS Windows API does support setting flow profiles directly, but this seems to be highly buggy, at least for 5.0.7, so instead it directly writes the flow file using `pyrasfile`.  In order to load the new flow data, it then has to save, close, and reopen the HEC-RAS project.
-* `api.data.velocity()` and `api.data.stage()` retrieve main channel velocity or stage for the specified river, reach, and cross-section.  If any of these are unspecified, it will return nested dictionaries covering all possibilities.  In order to retrieve multiple flow profiles' data, specify the number of flow profiles.  For example, if you set up 100 steady flows with `setSteadyFlows()`, specify `nprofs=100` to retrieve data for all of them.
+* `api.data.velocity()`, `api.data.stage()`, and `api.data.shear()` retrieve main channel velocity, stage, or shear for the specified river, reach, and cross-section.  If any of these are unspecified, it will return nested dictionaries covering all possibilities.  In order to retrieve multiple flow profiles' data, specify the number of flow profiles.  For example, if you set up 100 steady flows with `setSteadyFlows()`, specify `nprofs=100` to retrieve data for all of them.
+* The above three have corresponding methods `velocityDist`, `depthDist`, and `shearDist` retrieving the left overbank/main channel/right overbank distributions (as lists in that order).  `depthDist` uses hydraulic depths for the overbanks and maximum channel depth for the main channel.
 
 These four key points are what support roughness autocalibration; they would also support automatically running and extracting data for a wide range of flows and the like.  The source code for Raspy-Cal provides usage examples.
 

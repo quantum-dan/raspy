@@ -75,6 +75,11 @@ class DataAPI(object):
     # Data retrieval
     def __init__(self, rasObj):
         self.ras = rasObj
+    def allFlowDist(self, river = None, reach = None, rs = None, nprofs = 1):
+        if nprofs == 1:
+            return self.ras.getLCRSimData(river, reach, rs)
+        else:
+            return {i: self.ras.getLCRSimData(river, reach, rs, prof = i) for i in range(1, nprofs + 1)}
     def allFlow(self, river = None, reach = None, rs = None, nprofs = 1):
         if nprofs == 1:
             return self.ras.getSimData(river, reach, rs)
@@ -85,28 +90,23 @@ class DataAPI(object):
         # func: function to extract relevant value from data class (e.g. lambda x: x.velocity)
         result = self.allFlow(river, reach, rs, nprofs)
         return nestedDictMap(result, func)
-        # if not (rs is None): # just the one station
-        #     return func(result)
-        # elif not (reach is None): # just the one reach
-        #     for rs, dat in result.items():
-        #         dat = func(dat)
-        #         result[rs] = dat
-        #     return result
-        # elif not (river is None): # just the one river
-        #     for rch, rdat in result.items():
-        #         for rs, dat in rdat.items():
-        #             rdat[rs] = func(dat)
-        #     return result
-        # else: # all rivers
-        #     for riv, ridat in result.items():
-        #         for rch, rdat in ridat.items():
-        #             for rs, dat in rdat.items():
-        #                 rdat[rs] = func(dat)
-        #     return result
+    def getSingleDatumDist(self, func, river, reach, rs, nprofs = 1):
+        # Get a single datum (e.g. velocity, stage), regardless of level of nesting
+        # func: function to extract relevant value from data class (e.g. lambda x: x.velocity)
+        result = self.allFlowDist(river, reach, rs, nprofs)
+        return nestedDictMap(result, func)
     def velocity(self, river = None, reach = None, rs = None, nprofs = 1):
         return self.getSingleDatum(lambda x: x.velocity, river, reach, rs, nprofs)
     def stage(self, river = None, reach = None, rs = None, nprofs = 1):
         return self.getSingleDatum(lambda x: x.maxDepth, river, reach, rs, nprofs)
+    def shear(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatum(lambda x: x.shear, river, reach, rs, nprofs)
+    def velocityDist(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatumDist(lambda x: x.velocity, river, reach, rs, nprofs)
+    def depthDist(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatumDist(lambda x: x.maxDepth, river, reach, rs, nprofs)
+    def shearDist(self, river = None, reach = None, rs = None, nprofs = 1):
+        return self.getSingleDatumDist(lambda x: x.shear, river, reach, rs, nprofs)
     # Below not strictly needed for raspy-cal
     # def ratingCurve
     # def n
