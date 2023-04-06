@@ -3,7 +3,7 @@ Python interface for HEC-RAS.  RAS + Python = raspy.
 
 This can be installed on pip/PyPI as [raspy-auto](https://pypi.org/project/raspy-auto/).
 
-This is developed primarily for use with [raspy-cal](https://github.com/quantum-dan/raspy-cal), an automatic calibrator for HEC-RAS.  However, it could be used for any other HEC-RAS automation project.  See [PyRAS](https://pypi.org/project/PyRAS/) and the paper "[Application of Python Scripting Techniques for Control and Automation of HEC-RAS Simulations](https://www.mdpi.com/2073-4441/10/10/1382)" for similar ideas.
+See [PyRAS](https://pypi.org/project/PyRAS/) and the paper "[Application of Python Scripting Techniques for Control and Automation of HEC-RAS Simulations](https://www.mdpi.com/2073-4441/10/10/1382)" for similar ideas.
 
 # HEC-RAS Versions
 
@@ -33,11 +33,6 @@ The `API` object contains three other objects: `ops`, which contains operations 
 * `api.data.velocity()`, `api.data.stage()`, and `api.data.shear()` retrieve main channel velocity, stage, or shear for the specified river, reach, and cross-section.  If any of these are unspecified, it will return nested dictionaries covering all possibilities.  In order to retrieve multiple flow profiles' data, specify the number of flow profiles.  For example, if you set up 100 steady flows with `setSteadyFlows()`, specify `nprofs=100` to retrieve data for all of them.
 * The above three have corresponding methods `velocityDist`, `depthDist`, and `shearDist` retrieving the left overbank/main channel/right overbank distributions (as lists in that order).  `depthDist` uses hydraulic depths for the overbanks and maximum channel depth for the main channel.
 
-These four key points are what support roughness autocalibration; they would also support automatically running and extracting data for a wide range of flows and the like.  The source code for Raspy-Cal provides usage examples.
-
-General users should be aware that, in the short term, only functionality needed for raspy-cal will be implemented.  Other functionality
-may be added over the longer term, but the current primary purpose of this project is to support automatic calibration with raspy-cal.  However, other contributors are welcome to focus on broadening the functionality.  In addition, I may be able to implement straightforward additional functionality on request.
-
 ## Dependencies
 
 * pywin32
@@ -61,12 +56,13 @@ That is, what HEC-RAS interactions will be supported.
 
 Combined, this set of capabilities permits fully automated use of HEC-RAS once geometry has been specified, which can be used to support calibration as well as other applications (e.g. testing a wide range of flow inputs).
 
-## Raspy External Interface
+## Raspy External Interfaces
 
-That is, what means for other programs to interface with Raspy will be supported.  Aside from the Python module, these are longer-term goals, since the immediate objective is for use by an automatic calibrator which will also be written in Python.
+If there is need for it (open an Issue), I should be able to fairly quickly implement an R interface (through Reticulate) or a plain text config file-based mechanism for using Raspy.  Currently, Raspy can only be used as a Python module.
 
-* Abstraction layer for use as a module by other Python programs
-* R interface to the abstraction layer (using Reticulate)
-* Text input files for generic control by any program
+# Current Applications
 
-This set of capabilities permits the above-described HEC-RAS interface to be easily used by any program even if that program does not fit one of the direct interfaces (Python or R), facilitating easy extensibility for unforeseen applications or methods.
+Raspy is currently used by two other HEC-RAS automation tools.
+
+- [RaspyGeo](https://github.com/quantum-dan/raspygeo) automatically implements and tests HEC-RAS cross-section geometry scenarios (channel geometry modifications).  It handles HEC-RAS geometry editing, then uses Raspy to run scenarios and retrieve results.
+- [Raspy-Cal](https://github.com/quantum-dan/raspy-cal) is an automatic calibration application for Manning's roughness in HEC-RAS.  It uses Raspy to set roughness, run the model, and retrieve results.
