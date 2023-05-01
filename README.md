@@ -5,6 +5,11 @@ This can be installed on pip/PyPI as [raspy-auto](https://pypi.org/project/raspy
 
 See [PyRAS](https://pypi.org/project/PyRAS/) and the paper "[Application of Python Scripting Techniques for Control and Automation of HEC-RAS Simulations](https://www.mdpi.com/2073-4441/10/10/1382)" for similar ideas.
 
+Related packages:
+
+* [RaspyGeo](https://github.com/quantum-dan/raspygeo) builds on Raspy to automate geometry modification scenarios.
+* [Raspy-Cal](https://github.com/quantum-dan/raspy-cal) uses Raspy for automatic calibration of Manning's roughness.
+
 # HEC-RAS Versions
 
 It is now straightforwardly possible to specify different HEC-RAS versions when
