@@ -83,15 +83,25 @@ class Ras(object):
 
     def getSimData(self, river = None, reach = None, rs = None, prof = 1):
         # Single values only.
-        sd = self.getLCRSimData(river, reach, rs, prof)
         mainchan = lambda x: x[0] if len(x) == 1 else x[1]
-        return SimData(
-            mainchan(sd.velocity),
-            max(sd.maxDepth),
-            sum(sd.flow),
-            mainchan(sd.shear),
-            { k: sum(sd.etc[k]) for k in sd.etc }
-            )
+        if river is None:
+            return {riv.river: self.getSimData(riv.river, reach, rs, prof) for riv in self.rivers}
+        elif reach is None:
+            riv = self.river(river)
+            return {rch.reach: self.getSimData(riv.river, rch.reach, rs, prof) for rch in riv.reaches}
+        elif rs is None:
+            riv = self.river(river)
+            rch = self.reach(river, reach)
+            return {xs.rs: self.getSimData(riv.river, rch.reach, xs.rs, prof) for xs in rch.xses}
+        else:
+            sd = self.getLCRSimData(river, reach, rs, prof)
+            return SimData(
+                mainchan(sd.velocity),
+                max(sd.maxDepth),
+                sum(sd.flow),
+                mainchan(sd.shear),
+                { k: sum(sd.etc[k]) for k in sd.etc }
+                )
 
     def getLCRSimData(self, river = None, reach = None, rs = None, prof = 1):
         # Similar to above, but retrieves Left, Channel, Right values
@@ -100,14 +110,14 @@ class Ras(object):
         checkDrop = lambda x: [i for i in x if i < 1e30]
         wrap0 = lambda x: [0, x[0], 0] if len(x) == 1 else x
         if river is None:
-            return {riv.river: self.getLCRSimData(riv.river, reach, rs) for riv in self.rivers}
+            return {riv.river: self.getLCRSimData(riv.river, reach, rs, prof) for riv in self.rivers}
         elif reach is None:
             riv = self.river(river)
-            return {rch.reach: self.getLCRSimData(riv.river, rch.reach, rs) for rch in riv.reaches}
+            return {rch.reach: self.getLCRSimData(riv.river, rch.reach, rs, prof) for rch in riv.reaches}
         elif rs is None:
             riv = self.river(river)
             rch = self.reach(river, reach)
-            return {xs.rs: self.getLCRSimData(riv.river, rch.reach, xs.rs) for xs in rch.xses}
+            return {xs.rs: self.getLCRSimData(riv.river, rch.reach, xs.rs, prof) for xs in rch.xses}
         else:
             riv = self.river(river)
             rch = riv.reach(reach)
